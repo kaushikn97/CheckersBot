@@ -2,8 +2,15 @@ import numpy
 import math
 import timeit
 from random import shuffle
+import copy
 
 sim_time = 1
+
+def in_bound(x,y):
+    if x < 8 and x > 0 and y > 0 and y < 8 :
+        return True
+    else:
+        return False
 
 # current player is the player who will play the next move
 # stats of player 1 are stores
@@ -18,10 +25,18 @@ class Stats:
 
     def ucb(self):
 
-        if s == 0:
+        if self.s == 0:
             return 1000
         else:
-            return (w/s) + (c*math.sqrt(math.log(sp)/s))
+            return (self.w/self.s) + (self.c*math.sqrt(math.log(self.sp + 1)/self.s))
+    
+    def probability(self):
+
+        if self.s == 0:
+            return 0
+        else:
+            return (self.w/self.s)
+        
 
 class Node:
 
@@ -32,12 +47,17 @@ class Node:
         self.currPlayer = player
         self.nextMoves = []
         self.parentNode = parent
+        self.board = numpy.full((8,8),0)
+        
+    def setBoard(self):
+        for loc in self.currPlayer.pieces:
+                self.board[loc] = self.currPlayer.playerId
+        for loc in self.oppPlayer.pieces:
+                self.board[loc] = self.oppPlayer.playerId
+                
+    def printBoard(self):
+        print(self.board)
 
-    def in_bound(x,y):
-        if x < 8 and x > 0 and y > 0 and y < 8 :
-            return true
-        else:
-            return false
 
     def allPossibleMoves(self):
         moves = []
@@ -47,51 +67,51 @@ class Node:
         for piece in pieces:
             x,y = piece
 
-            if in_bound(x+1,y+1) and ((x+1,y+1) not in pieces) and ((x+1,y+1) not in oppPieces):
+            if in_bound(x+1,y+1) and ((x+1,y+1) not in pieces) and ((x+1,y+1) not in oppPieces) and self.currPlayer.playerId == 1:
 
-               temp_player = self.currPlayer
-               temp_opponent = self.oppPlayer
+               temp_player = copy.deepcopy(self.currPlayer)
+               temp_opponent = copy.deepcopy(self.oppPlayer)
                temp_player.pieces.remove((x,y))
                temp_player.pieces.append((x+1,y+1))
 
                new_node = Node(temp_opponent,temp_player,self,self.gameStats.sp)
                moves.append(new_node)
 
-            if in_bound(x-1,y+1) and (x-1,y+1) not in pieces:
+            if in_bound(x-1,y-1) and ((x-1,y-1) not in pieces) and ((x-1,y-1) not in oppPieces) and self.currPlayer.playerId == 2:
 
-               temp_player = self.currPlayer
-               temp_opponent = self.oppPlayer
-               temp_player.pieces.remove((x,y))
-               temp_player.pieces.append((x-1,y+1))
-
-               new_node = Node(temp_opponent,temp_player,self,self.gameStats.sp)
-               moves.append(new_node)
-
-            if in_bound(x+1,y-1) and (x+1,y-1) not in pieces:
-
-
-               temp_player = self.currPlayer
-               temp_opponent = self.oppPlayer
-               temp_player.pieces.remove((x,y))
-               temp_player.pieces.append((x+1,y-1))
-
-               new_node = Node(temp_opponent,temp_player,self,self.gameStats.sp)
-               moves.append(new_node)
-
-            if in_bound(x-1,y-1) and (x-1,y-1) not in pieces:
-
-               temp_player = self.currPlayer
-               temp_opponent = self.oppPlayer
+               temp_player = copy.deepcopy(self.currPlayer)
+               temp_opponent = copy.deepcopy(self.oppPlayer)
                temp_player.pieces.remove((x,y))
                temp_player.pieces.append((x-1,y-1))
 
                new_node = Node(temp_opponent,temp_player,self,self.gameStats.sp)
                moves.append(new_node)
 
-            if (x+1,y+1) in oppPieces and (x+2,y+2 not in pieces) and (x+2,y+2 not in oppPieces):
+            if in_bound(x+1,y-1) and ((x+1,y-1) not in pieces) and ((x+1,y-1) not in oppPieces) and self.currPlayer.playerId == 1:
 
-               temp_player = self.currPlayer
-               temp_opponent = self.oppPlayer
+
+               temp_player = copy.deepcopy(self.currPlayer)
+               temp_opponent = copy.deepcopy(self.oppPlayer)
+               temp_player.pieces.remove((x,y))
+               temp_player.pieces.append((x+1,y-1))
+
+               new_node = Node(temp_opponent,temp_player,self,self.gameStats.sp)
+               moves.append(new_node)
+
+            if in_bound(x-1,y+1) and ((x-1,y+1) not in pieces) and ((x-1,y+1) not in oppPieces) and self.currPlayer.playerId == 2:
+
+               temp_player = copy.deepcopy(self.currPlayer)
+               temp_opponent = copy.deepcopy(self.oppPlayer)
+               temp_player.pieces.remove((x,y))
+               temp_player.pieces.append((x-1,y+1))
+
+               new_node = Node(temp_opponent,temp_player,self,self.gameStats.sp)
+               moves.append(new_node)
+
+            if in_bound(x+2,y+2) and ((x+1,y+1) in oppPieces) and (x+2,y+2 not in pieces) and (x+2,y+2 not in oppPieces) and self.currPlayer.playerId == 1 :
+
+               temp_player = copy.deepcopy(self.currPlayer)
+               temp_opponent = copy.deepcopy(self.oppPlayer)
                temp_player.pieces.remove((x,y))
                temp_player.pieces.append((x+2,y+2))
                temp_opponent.pieces.remove((x+1,y+1))
@@ -100,10 +120,10 @@ class Node:
                moves.append(new_node)
 
 
-            if (x-1,y-1) in oppPieces and (x-2,y-2 not in pieces) and (x-2,y-2 not in oppPieces):
+            if in_bound(x-2,y-2) and ((x-1,y-1) in oppPieces) and (x-2,y-2 not in pieces) and (x-2,y-2 not in oppPieces) and self.currPlayer.playerId == 2:
 
-               temp_player = self.currPlayer
-               temp_opponent = self.oppPlayer
+               temp_player = copy.deepcopy(self.currPlayer)
+               temp_opponent = copy.deepcopy(self.oppPlayer)
                temp_player.pieces.remove((x,y))
                temp_player.pieces.append((x-2,y-2))
                temp_opponent.pieces.remove((x-1,y-1))
@@ -111,10 +131,10 @@ class Node:
                new_node = Node(temp_opponent,temp_player,self,self.gameStats.sp)
                moves.append(new_node)
 
-            if (x-1,y+1) in oppPieces and (x-2,y+2 not in pieces) and (x-2,y+2 not in oppPieces):
+            if in_bound(x-2,y+2) and ((x-1,y+1) in oppPieces) and (x-2,y+2 not in pieces) and (x-2,y+2 not in oppPieces) and self.currPlayer.playerId == 2:
 
-               temp_player = self.currPlayer
-               temp_opponent = self.oppPlayer
+               temp_player = copy.deepcopy(self.currPlayer)
+               temp_opponent = copy.deepcopy(self.oppPlayer)
                temp_player.pieces.remove((x,y))
                temp_player.pieces.append((x-2,y+2))
                temp_opponent.pieces.remove((x-1,y+1))
@@ -122,10 +142,10 @@ class Node:
                new_node = Node(temp_opponent,temp_player,self,self.gameStats.sp)
                moves.append(new_node)
 
-            if (x+1,y-1) in oppPieces and (x+2,y-2 not in pieces) and (x+2,y-2 not in oppPieces):
+            if in_bound(x+2,y-2) and ((x+1,y-1) in oppPieces) and (x+2,y-2 not in pieces) and (x+2,y-2 not in oppPieces) and self.currPlayer.playerId == 1:
 
-               temp_player = self.currPlayer
-               temp_opponent = self.oppPlayer
+               temp_player = copy.deepcopy(self.currPlayer)
+               temp_opponent = copy.deepcopy(self.oppPlayer)
                temp_player.pieces.remove((x,y))
                temp_player.pieces.append((x+2,y-2))
                temp_opponent.pieces.remove((x+1,y-1))
@@ -148,15 +168,15 @@ class Node:
             return
         else:
             self.parentNode.updateStats(winner)
-            return moves
+            return
 
     def simulate(self):
 
         curr_node = self
         winner = 0
-
-        while true:
-
+        start_time = timeit.default_timer()
+        while timeit.default_timer() < start_time + 1:
+            
             if  len(curr_node.currPlayer.pieces) ==0 and len(curr_node.oppPlayer.pieces) !=0:
                 winner = curr_node.oppPlayer.playerId
                 break
@@ -166,12 +186,29 @@ class Node:
                 break
             
             moves = curr_node.allPossibleMoves()
+            curr_node.setBoard()
+            #curr_node.printBoard()
             shuffle(moves)
-
-            curr_node = moves[0]
+            if len(moves) != 0:
+                curr_node = moves[0]
+            else:
+                winner = curr_node.oppPlayer.playerId 
+                break
 
         return winner
 
+    def nextBestMove(self):
+        
+        #print "Finding next best move"
+        if not self.nextMoves:
+            self.nextMoves = self.allPossibleMoves()
+        max_ucb = -1
+
+        for node in self.nextMoves:
+            if node.gameStats.ucb()>max_ucb:
+                bestNode = node
+
+        return bestNode
 
 
 class Tree:
@@ -180,17 +217,20 @@ class Tree:
         self.root = Node(Player(1),Player(2))
         self.currNode = self.root
 
-    def nextBestMove(self):
+   
+    def nextBestPlay(self):
 
         if not self.currNode.nextMoves:
             self.currNode.nextMoves = self.currNode.allPossibleMoves()
-        max_ucb = -1
-
+        max_prob= -1
+        #print len(self.currNode.nextMoves)
+        #if len(self.currNode.nextMoves) == 0 :
+            
         for node in self.currNode.nextMoves:
-            if node.gameStats.ucb()>max_ucb:
-                bestNode = node
+            if node.gameStats.probability()>max_prob:
+                bestPlay = node
 
-        return bestNode
+        return bestPlay
 
 class Game:
 
@@ -199,10 +239,6 @@ class Game:
                 self.board[loc] = 1
         for loc in self.p2.pieces:
                 self.board[loc] = 2
-
-    def play(self,player):
-        print('playing')
-        #todo
 
     def printBoard(self):
         print(self.board)
@@ -214,25 +250,46 @@ class Game:
         self.setBoard()
         self.status = 0
         self.gameTree = Tree()
+        
+    def getStatus(self):
+        
+        winner = 0
+        curr_node = self.gameTree.currNode
+        if  len(curr_node.currPlayer.pieces) ==0 and len(curr_node.oppPlayer.pieces) !=0:
+            winner = curr_node.oppPlayer.playerId
 
+    
+        elif len(curr_node.currPlayer.pieces) !=0 and len(curr_node.oppPlayer.pieces) ==0:
+            winner = curr_node.currPlayer.playerId
+            
+        return winner
+    
     def play(self):
 
-        start_time = timeit.default_timer()
+        counter=10
 
-        while timeit.default_timer < start_time + sim_time:
+        while counter>0:
 
             current = self.gameTree.currNode
-            while true:
+            while True:
 
                 if current.gameStats.s == 0:
                     winner = current.simulate()
-                    current.updateStats(winner)
+                    print counter,winner
+                    if winner != 0:
+                        current.updateStats(winner)
                     break
 
                 else:
                     current = current.nextBestMove()
-
-        self.gameTree.currNode = self.gameTree.currNode.nextBestMove()
+                    
+            counter-=1
+        
+        #print "timed out"
+        self.gameTree.currNode = self.gameTree.nextBestPlay()
+        self.gameTree.currNode.setBoard()
+        self.gameTree.currNode.printBoard()
+        self.status = self.getStatus()
 
 class Player:
 
