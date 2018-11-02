@@ -1,6 +1,7 @@
 import numpy
 import math
 import timeit
+from random import shuffle
 
 sim_time = 1
 
@@ -45,8 +46,6 @@ class Node:
         
         for piece in pieces:
             x,y = piece
-            if piece is (-1,-1):
-                continue
 
             if in_bound(x+1,y+1) and ((x+1,y+1) not in pieces) and ((x+1,y+1) not in oppPieces):
               
@@ -135,7 +134,31 @@ class Node:
                moves.append(new_node)
 
 
-    return moves
+            return moves
+        
+        def simulate(self):
+            
+            curr_node = self
+            winner = 0
+            
+            while true:
+                
+                if  len(curr_node.currPlayer.pieces) ==0 and len(curr_node.oppPlayer.pieces) !=0:
+                    winner = curr_node.oppPlayer.playerId
+                    break
+                
+                elif len(curr_node.currPlayer.pieces) !=0 and len(curr_node.oppPlayer.pieces) ==0:
+                    winner = curr_node.currPlayer.playerId
+                    break
+                
+                moves = curr_node.allPossibleMoves()
+                shuffle(moves)
+                
+                curr_node = moves[0]
+                
+            return winner
+            
+            
 
 class Tree:
 
