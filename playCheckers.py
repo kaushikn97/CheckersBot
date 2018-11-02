@@ -5,13 +5,13 @@ def main():
 
     while game.status == 0:
 
-        game.play(1)
+        game.play()
         game.printBoard()
 
         if game.status != 0:
             break
 
-        game.play(2)
+        game.play()
         game.printBoard()
 
     print("Player " + str(game.status) + "wins")
