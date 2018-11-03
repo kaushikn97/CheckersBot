@@ -203,7 +203,9 @@ class Node:
         if not self.nextMoves:
             self.nextMoves = self.allPossibleMoves()
         max_ucb = -1
-
+        if len(self.nextMoves) == 0:
+            return self.oppPlayer.playerId
+        #print "length of nextmove:", len(self.nextMoves)
         for node in self.nextMoves:
             if node.gameStats.ucb()>max_ucb:
                 bestNode = node
@@ -223,14 +225,28 @@ class Tree:
         if not self.currNode.nextMoves:
             self.currNode.nextMoves = self.currNode.allPossibleMoves()
         max_prob= -1
-        #print len(self.currNode.nextMoves)
+        min_prob = 5000
+        #print "length",len(self.currNode.nextMoves)
         #if len(self.currNode.nextMoves) == 0 :
+        
+        if len(self.currNode.nextMoves) == 0:
+            return self.currNode.oppPlayer.playerId
+        
+        if self.currNode.oppPlayer.playerId == 2 :
+            shuffle(self.currNode.nextMoves)
+            return self.currNode.nextMoves[0]
             
         for node in self.currNode.nextMoves:
             if node.gameStats.probability()>max_prob:
                 bestPlay = node
+            if node.gameStats.probability()<min_prob:
+                worstPlay = node
+            
 
-        return bestPlay
+        if self.currNode.currPlayer.playerId == 1:
+            return bestPlay
+        else:
+            return worstPlay
 
 class Game:
 
@@ -266,7 +282,7 @@ class Game:
     
     def play(self):
 
-        counter=10
+        counter=1000
 
         while counter>0:
 
@@ -275,21 +291,34 @@ class Game:
 
                 if current.gameStats.s == 0:
                     winner = current.simulate()
-                    print counter,winner
+                    #print counter,winner
                     if winner != 0:
                         current.updateStats(winner)
                     break
 
                 else:
-                    current = current.nextBestMove()
+                    x = current.nextBestMove()
+                    if isinstance(x,int):
+                        current.updateStats(x)
+                        break
+                    else:
+                        current = x
                     
             counter-=1
         
         #print "timed out"
-        self.gameTree.currNode = self.gameTree.nextBestPlay()
+    
+        x = self.gameTree.nextBestPlay()
+        if isinstance(x,int):
+            self.status = x
+            #print "game ended with winner: ",x
+        else:
+            self.gameTree.currNode = x
+
         self.gameTree.currNode.setBoard()
         self.gameTree.currNode.printBoard()
-        self.status = self.getStatus()
+        if self.status == 0:
+            self.status = self.getStatus()
 
 class Player:
 
