@@ -3,6 +3,7 @@ import math
 import timeit
 from random import shuffle
 import copy
+from termcolor import colored
 
 sim_time = 1
 
@@ -60,31 +61,48 @@ class Node:
         self.parentNode = parent
 
     def printBoard(self):
+
+
         currBoard = numpy.full((8,8),0)
+        currKings = numpy.full((8,8),0)
+        if self.currPlayer.playerId == 1:
+            print("Red pieces remaining: " + str(len(self.currPlayer.pieces)))
+            print("Blue pieces remaining: " + str(len(self.oppPlayer.pieces)))
+        else:
+            print("Red pieces remaining: " + str(len(self.oppPlayer.pieces)))
+            print("Blue pieces remaining: " + str(len(self.currPlayer.pieces)))
+
+        print("\n\n")
+        index = 0
         for piece in self.currPlayer.pieces:
             currBoard[piece] = self.currPlayer.playerId
-
+            currKings[piece] = self.currPlayer.isKing[index]
+            index = index + 1
+        index = 0
         for piece in self.oppPlayer.pieces:
             currBoard[piece] = self.oppPlayer.playerId
-
+            currKings[piece] = self.oppPlayer.isKing[index]
+            index = index + 1
         print("   "),
-        for i in range(0,8):
+        for i in range(1,9):
             print(i),
 
         print("\n"),
         print("\n"),
 
         for i in range(0,8):
-            print(i),
+            print(chr(65+i)),
             print(" "),
             for j in range(0,8):
                 piece = i,j
-                if currBoard[piece] == 1 :
-                    prRed(currBoard[piece])
-                if currBoard[piece] == 2 :
-                    prCyan(currBoard[piece])
-                else :
-                    prLightGray(currBoard[piece])
+                if currKings[piece] == 1:
+                    print(colored(currBoard[piece],'green')),
+                elif currBoard[piece] == 1 :
+                    print(colored(currBoard[piece],'red')),
+                elif currBoard[piece] == 2 :
+                    print(colored(currBoard[piece],'cyan')),
+                else:
+                    print(currBoard[piece]),
             print("\n"),
 
 
@@ -254,6 +272,16 @@ class Node:
             if node.gameStats.ucb()>max_ucb:
                 bestNode = node
 
+        same_moves = []
+        if bestNode.gameStats.ucb == 1000:
+            for node in self.nextMoves:
+                if node.gameStats.ucb == 1000:
+                    same_moves.append(node)
+
+        if len(same_moves)!=0:
+            shuffle(same_moves)
+            bestNode = same_moves[0]
+
         return bestNode
 
 
@@ -315,7 +343,7 @@ class Game:
 
         t0 = timeit.default_timer()
 
-        while timeit.default_timer() < t0 + 5:
+        while timeit.default_timer() < t0 + 1:
 
             current = self.gameTree.currNode
             while True:
