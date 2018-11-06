@@ -1,3 +1,4 @@
+from classes import *
 import copy
 import tkMessageBox
 from Tkinter import *
@@ -9,6 +10,7 @@ class CheckersBoardUI(object):
     """The gui implementation of checkers board for two human players.
     holds CheckersBoard as a class member and uses its logic methods \ routines."""
     _game_board = CheckersBoard
+    game = Game
     _game_board_ui = []
     _white_pieces_ui = []
     _red_pieces_ui = []
@@ -44,6 +46,8 @@ class CheckersBoardUI(object):
         if self._game_board is None:
             self._game_board = CheckersBoard()
 
+        #game = Game()
+        self.game = Game()
         self.create_board_checkers()
         self._new_game_button.config(state=DISABLED)
         self._forfeit_button.config(state='normal')

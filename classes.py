@@ -56,10 +56,23 @@ class Node:
         for piece in self.oppPlayer.pieces:
             currBoard[piece] = self.oppPlayer.playerId
 
-        print(currBoard)
+        print("   "),
+        for i in range(0,8):
+            print(i),
+            
+        print("\n"),
+        print("\n"),
+            
+        for i in range(0,8):
+            print(i),
+            print(" "),
+            for j in range(0,8):
+                piece = i,j
+                print(currBoard[piece]),
+            print("\n"),
 
 
-    def allPossibleMoves(self,p):
+    def allPossibleMoves(self):
         moves = []
         pieces = self.currPlayer.pieces
         oppPieces = self.oppPlayer.pieces
@@ -78,8 +91,7 @@ class Node:
                temp_player.pieces.append((x+1,y+1))
                temp_player.updateKings()
 
-               if p == 1:
-                   print((x,y),(x+1,y+1))
+            
                if len(temp_player.pieces) == prev_len_player and len(temp_opponent.pieces) == prev_len_opp :
                    new_node = Node(temp_opponent,temp_player,self,self.gameStats.sp)
                    moves.append(new_node)
@@ -202,7 +214,7 @@ class Node:
                 winner = curr_node.currPlayer.playerId
                 break
 
-            moves = curr_node.allPossibleMoves(0)
+            moves = curr_node.allPossibleMoves()
             shuffle(moves)
 
             if len(moves) != 0:
@@ -217,7 +229,7 @@ class Node:
 
         #print "Finding next best move"
         if not self.nextMoves:
-            self.nextMoves = self.allPossibleMoves(0)
+            self.nextMoves = self.allPossibleMoves()
         max_ucb = -1
         if len(self.nextMoves) == 0:
             return self.oppPlayer.playerId
@@ -319,6 +331,58 @@ class Game:
         self.gameTree.currNode.printBoard()
         if self.status == 0:
             self.status = self.getStatus()
+            
+    
+    def userPlay(self,piece_loc,move_loc):
+        
+        x,y = piece_loc
+        X,Y = move_loc
+        curr_node = copy.deepcopy(self.gameTree.currNode)
+        
+        if (not in_bound(x,y)) or (not in_bound(X,Y) or (piece_loc not in curr_node.currPlayer.pieces)):
+            return -1
+        
+        curr_node.currPlayer.pieces.remove((x,y))
+        curr_node.currPlayer.pieces.append((X,Y))
+        
+        
+        if X == x-2 and Y == y+2 and ((x-1,y+1) in curr_node.oppPlayer.pieces):
+            curr_node.oppPlayer.pieces.remove((x-1,y+1))
+        
+        elif X == x-2 and Y == y-2 and ((x-1,y-1) in curr_node.oppPlayer.pieces):
+            curr_node.oppPlayer.pieces.remove((x-1,y-1))
+            
+        elif X == x+2 and Y == y+2 and ((x+1,y+1) in curr_node.oppPlayer.pieces):
+            curr_node.oppPlayer.pieces.remove((x+1,y+1))
+            
+        elif X == x+2 and Y == y-2 and ((x+1,y-1) in curr_node.oppPlayer.pieces):
+            curr_node.oppPlayer.pieces.remove((x+1,y-1))
+            
+        """print sorted(curr_node.currPlayer.pieces)
+        print("\n"),
+        print sorted(curr_node.oppPlayer.pieces)"""
+        
+        if len(self.gameTree.currNode.nextMoves) == 0:
+            moves = self.gameTree.currNode.nextMoves
+        else:
+            moves = self.gameTree.currNode.allPossibleMoves()
+            
+        if len(moves) == 0:
+            self.status = 1
+            return -1
+        
+        for move in moves:
+            
+            """print(sorted(move.currPlayer.pieces))
+            print(sorted(move.oppPlayer.pieces))
+            print("\n"),"""
+            
+            if sorted(move.currPlayer.pieces) == sorted(curr_node.oppPlayer.pieces) and sorted(move.oppPlayer.pieces) == sorted(curr_node.currPlayer.pieces):
+                self.gameTree.currNode = move
+                return move
+        
+        return -1
+        
 
 class Player:
 
