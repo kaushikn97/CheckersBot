@@ -5,18 +5,7 @@ from random import shuffle
 import copy
 from termcolor import colored
 
-sim_time = 1
-
-# Python program to print
-# colored text and background
-def prRed(skk): print("\033[91m {}\033[00m" .format(skk))
-def prGreen(skk): print("\033[92m {}\033[00m" .format(skk))
-def prYellow(skk): print("\033[93m {}\033[00m" .format(skk))
-def prLightPurple(skk): print("\033[94m {}\033[00m" .format(skk))
-def prPurple(skk): print("\033[95m {}\033[00m" .format(skk))
-def prCyan(skk): print("\033[96m {}\033[00m" .format(skk))
-def prLightGray(skk): print("\033[97m {}\033[00m" .format(skk))
-def prBlack(skk): print("\033[98m {}\033[00m" .format(skk))
+sim_time = 5
 
 def in_bound(x,y):
     if x < 8 and x >= 0 and y >= 0 and y < 8 :
@@ -65,14 +54,8 @@ class Node:
 
         currBoard = numpy.full((8,8),0)
         currKings = numpy.full((8,8),0)
-        if self.currPlayer.playerId == 1:
-            print("Red pieces remaining: " + str(len(self.currPlayer.pieces)))
-            print("Blue pieces remaining: " + str(len(self.oppPlayer.pieces)))
-        else:
-            print("Red pieces remaining: " + str(len(self.oppPlayer.pieces)))
-            print("Blue pieces remaining: " + str(len(self.currPlayer.pieces)))
 
-        print("\n\n")
+        print("Board:\n")
         index = 0
         for piece in self.currPlayer.pieces:
             currBoard[piece] = self.currPlayer.playerId
@@ -87,8 +70,8 @@ class Node:
         for i in range(1,9):
             print(i),
 
-        print("\n"),
-        print("\n"),
+        print("\n")
+
 
         for i in range(0,8):
             print(chr(65+i)),
@@ -104,6 +87,13 @@ class Node:
                 else:
                     print(currBoard[piece]),
             print("\n"),
+
+        if self.currPlayer.playerId == 1:
+            print("\n" + colored("Red","red") + " pieces remaining: " + str(len(self.currPlayer.pieces)))
+            print(colored("Blue","cyan") + " pieces remaining: " + str(len(self.oppPlayer.pieces)))
+        else:
+            print("\n" + colored("Red","red") + " pieces remaining: " + str(len(self.oppPlayer.pieces)))
+            print(colored("Blue","cyan") + " pieces remaining: " + str(len(self.currPlayer.pieces)))
 
 
     def allPossibleMoves(self):
@@ -291,7 +281,6 @@ class Tree:
         self.root = Node(Player(1),Player(2))
         self.currNode = self.root
 
-
     def nextBestPlay(self):
 
         if not self.currNode.nextMoves:
@@ -343,7 +332,7 @@ class Game:
 
         t0 = timeit.default_timer()
 
-        while timeit.default_timer() < t0 + 1:
+        while timeit.default_timer() < t0 + sim_time:
 
             current = self.gameTree.currNode
             while True:
@@ -363,8 +352,6 @@ class Game:
                     else:
                         current = x
 
-
-
         x = self.gameTree.nextBestPlay()
         if isinstance(x,int):
             self.status = x
@@ -372,7 +359,7 @@ class Game:
         else:
             self.gameTree.currNode = x
 
-        self.gameTree.currNode.printBoard()
+        #self.gameTree.currNode.printBoard()
         if self.status == 0:
             self.status = self.getStatus()
 
@@ -402,10 +389,6 @@ class Game:
         elif X == x+2 and Y == y-2 and ((x+1,y-1) in curr_node.oppPlayer.pieces):
             curr_node.oppPlayer.pieces.remove((x+1,y-1))
 
-        """print sorted(curr_node.currPlayer.pieces)
-        print("\n"),
-        print sorted(curr_node.oppPlayer.pieces)"""
-
         if len(self.gameTree.currNode.nextMoves) == 0:
             moves = self.gameTree.currNode.nextMoves
         else:
@@ -417,10 +400,6 @@ class Game:
             return -1
 
         for move in moves:
-
-            """print(sorted(move.currPlayer.pieces))
-            print(sorted(move.oppPlayer.pieces))
-            print("\n"),"""
 
             if sorted(move.currPlayer.pieces) == sorted(curr_node.oppPlayer.pieces) and sorted(move.oppPlayer.pieces) == sorted(curr_node.currPlayer.pieces):
                 self.gameTree.currNode = move
