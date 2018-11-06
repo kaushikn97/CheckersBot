@@ -6,6 +6,17 @@ import copy
 
 sim_time = 1
 
+# Python program to print
+# colored text and background
+def prRed(skk): print("\033[91m {}\033[00m" .format(skk))
+def prGreen(skk): print("\033[92m {}\033[00m" .format(skk))
+def prYellow(skk): print("\033[93m {}\033[00m" .format(skk))
+def prLightPurple(skk): print("\033[94m {}\033[00m" .format(skk))
+def prPurple(skk): print("\033[95m {}\033[00m" .format(skk))
+def prCyan(skk): print("\033[96m {}\033[00m" .format(skk))
+def prLightGray(skk): print("\033[97m {}\033[00m" .format(skk))
+def prBlack(skk): print("\033[98m {}\033[00m" .format(skk))
+
 def in_bound(x,y):
     if x < 8 and x >= 0 and y >= 0 and y < 8 :
         return True
@@ -59,16 +70,21 @@ class Node:
         print("   "),
         for i in range(0,8):
             print(i),
-            
+
         print("\n"),
         print("\n"),
-            
+
         for i in range(0,8):
             print(i),
             print(" "),
             for j in range(0,8):
                 piece = i,j
-                print(currBoard[piece]),
+                if currBoard[piece] == 1 :
+                    prRed(currBoard[piece])
+                if currBoard[piece] == 2 :
+                    prCyan(currBoard[piece])
+                else :
+                    prLightGray(currBoard[piece])
             print("\n"),
 
 
@@ -91,7 +107,7 @@ class Node:
                temp_player.pieces.append((x+1,y+1))
                temp_player.updateKings()
 
-            
+
                if len(temp_player.pieces) == prev_len_player and len(temp_opponent.pieces) == prev_len_opp :
                    new_node = Node(temp_opponent,temp_player,self,self.gameStats.sp)
                    moves.append(new_node)
@@ -324,65 +340,66 @@ class Game:
         x = self.gameTree.nextBestPlay()
         if isinstance(x,int):
             self.status = x
-            print("No more plays")
+            print("Computer has run out of moves.")
         else:
             self.gameTree.currNode = x
 
         self.gameTree.currNode.printBoard()
         if self.status == 0:
             self.status = self.getStatus()
-            
-    
+
+
     def userPlay(self,piece_loc,move_loc):
-        
+
         x,y = piece_loc
         X,Y = move_loc
         curr_node = copy.deepcopy(self.gameTree.currNode)
-        
+
         if (not in_bound(x,y)) or (not in_bound(X,Y) or (piece_loc not in curr_node.currPlayer.pieces)):
             return -1
-        
+
         curr_node.currPlayer.pieces.remove((x,y))
         curr_node.currPlayer.pieces.append((X,Y))
-        
-        
+
+
         if X == x-2 and Y == y+2 and ((x-1,y+1) in curr_node.oppPlayer.pieces):
             curr_node.oppPlayer.pieces.remove((x-1,y+1))
-        
+
         elif X == x-2 and Y == y-2 and ((x-1,y-1) in curr_node.oppPlayer.pieces):
             curr_node.oppPlayer.pieces.remove((x-1,y-1))
-            
+
         elif X == x+2 and Y == y+2 and ((x+1,y+1) in curr_node.oppPlayer.pieces):
             curr_node.oppPlayer.pieces.remove((x+1,y+1))
-            
+
         elif X == x+2 and Y == y-2 and ((x+1,y-1) in curr_node.oppPlayer.pieces):
             curr_node.oppPlayer.pieces.remove((x+1,y-1))
-            
+
         """print sorted(curr_node.currPlayer.pieces)
         print("\n"),
         print sorted(curr_node.oppPlayer.pieces)"""
-        
+
         if len(self.gameTree.currNode.nextMoves) == 0:
             moves = self.gameTree.currNode.nextMoves
         else:
             moves = self.gameTree.currNode.allPossibleMoves()
-            
+
         if len(moves) == 0:
             self.status = 1
+            print("You have run out of moves.")
             return -1
-        
+
         for move in moves:
-            
+
             """print(sorted(move.currPlayer.pieces))
             print(sorted(move.oppPlayer.pieces))
             print("\n"),"""
-            
+
             if sorted(move.currPlayer.pieces) == sorted(curr_node.oppPlayer.pieces) and sorted(move.oppPlayer.pieces) == sorted(curr_node.currPlayer.pieces):
                 self.gameTree.currNode = move
                 return move
-        
+
         return -1
-        
+
 
 class Player:
 
