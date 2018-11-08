@@ -26,16 +26,24 @@ def main():
 
     print("\n\nWelcome to the Checkers game. You control the " + colored("blue","cyan") + " pieces. The computer will control the  " + colored("red","red") + " pieces. Red plays first.\n")
     game.gameTree.currNode.printBoard()
-
+    print game.gameTree.currNode.currPlayer.playerId
     raw_input("\nPress any enter to start the game.")
 
     while game.status == 0:
         print("\n*****************************************************************\n")
 
         print(colored("Red","red") + " is thinking...\n")
-
+        red_moves = []
+        if len(game.gameTree.currNode.nextMoves)!=0:
+            red_moves = game.gameTree.currNode.nextMoves
+        else:
+            red_moves = game.gameTree.currNode.allPossibleMoves()
+            
+        if len(red_moves)==0 or len(game.gameTree.currNode.currPlayer.pieces)==0:
+            game.status = 2
+            break
+            
         game.play()
-
         print(colored("Red","red") + " has played.\n")
 
         print("*****************************************************************")
@@ -45,10 +53,13 @@ def main():
         while True:
 
             print("\n"),
-            if len(game.gameTree.currNode.nextMoves) == 0:
+            moves = []
+            #print game.gameTree.currNode.currPlayer.playerId
+            if len(game.gameTree.currNode.nextMoves) != 0:
                 moves = game.gameTree.currNode.nextMoves
             else:
                 moves = game.gameTree.currNode.allPossibleMoves()
+                
 
             if len(moves) == 0:
                 print("You have run out of moves.")
@@ -69,25 +80,30 @@ def main():
                 continue
             print("")
             move = game.userPlay(piece,move_loc)
+            
+            #game.play()
 
             if game.status != 0:
                 break
 
-            if isinstance(move,int):
+            """if isinstance(move,int):
                 print(colored("Invalid move. Please try again.","yellow"))
 
             else:
-                break
+                break"""
+            break
 
 
         game.gameTree.currNode.printBoard()
 
-    if str(game.status) == 1 :
+    if str(game.status) == "1" :
         print(colored("\nRed","red") + " wins.")
-    elif str(game.status) == 2 :
+    elif str(game.status) == "2" :
         print(colored("\nBlue","cyan") + " wins.")
     else:
         print("The game has ended in a draw.")
+        
+    game.gameTree.currNode.printBoard()
 
 if __name__ == '__main__':
     main()
