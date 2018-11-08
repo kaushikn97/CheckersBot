@@ -405,6 +405,9 @@ class Game:
                 self.gameTree.currNode = move
                 return move
 
+        if self.status == 0:
+            self.status = self.getStatus()
+
         return -1
 
 
@@ -417,7 +420,7 @@ class Player:
                 x,y = piece
                 if x == 7:
                     self.isKing[self.pieces.index(piece)] = 1
-        else:
+        if self.playerId == 2:
             for piece in self.pieces:
                 x,y = piece
                 if x == 0:
