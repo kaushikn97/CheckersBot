@@ -5,6 +5,9 @@ from random import shuffle
 import copy
 from termcolor import colored
 
+# current player is the player who will play the next move
+# stats of player 1 are stores
+
 sim_time = 5
 
 def in_bound(x,y):
@@ -30,8 +33,6 @@ def remove(x,y,pieces):
             pieces.remove((x,y,isKing))
             return pieces
 
-# current player is the player who will play the next move
-# stats of player 1 are stores
 class Stats:
 
     def __init__(self,parentSimCount):
@@ -72,7 +73,7 @@ class Node:
         currBoard = numpy.full((8,8),0)
         currKings = numpy.full((8,8),0)
 
-        print("Board:\n")
+        print("\tBoard:\n")
         index = 0
         for piece in self.currPlayer.pieces:
             x,y,isKing = piece
@@ -87,7 +88,7 @@ class Node:
             currBoard[loc] = self.oppPlayer.playerId
             currKings[loc] = isKing
             index = index + 1
-        print("   "),
+        print("\t   "),
         for i in range(1,9):
             print(i),
 
@@ -95,6 +96,7 @@ class Node:
 
 
         for i in range(0,8):
+            print("\t"),
             print(chr(65+i)),
             print(" "),
             for j in range(0,8):
@@ -104,28 +106,26 @@ class Node:
                 elif currBoard[piece] == 1 :
                     print(colored(currBoard[piece],'red')),
                 elif currBoard[piece] == 2 :
-                    print(colored(currBoard[piece],'cyan')),
+                    print(colored(currBoard[piece],'blue')),
                 else:
                     print(currBoard[piece]),
             print("\n"),
 
         if self.currPlayer.playerId == 1:
-            print("\n" + colored("Red","red") + " pieces remaining: " + str(len(self.currPlayer.pieces)))
-            print(colored("Blue","cyan") + " pieces remaining: " + str(len(self.oppPlayer.pieces)))
+            print("\n\t" + colored("Red","red") + " pieces remaining: " + str(len(self.currPlayer.pieces)))
+            print("\t" + colored("Blue","blue") + " pieces remaining: " + str(len(self.oppPlayer.pieces)))
         else:
-            print("\n" + colored("Red","red") + " pieces remaining: " + str(len(self.oppPlayer.pieces)))
-            print(colored("Blue","cyan") + " pieces remaining: " + str(len(self.currPlayer.pieces)))
+            print("\n\t" + colored("Red","red") + " pieces remaining: " + str(len(self.oppPlayer.pieces)))
+            print("\t" + colored("Blue","blue") + " pieces remaining: " + str(len(self.currPlayer.pieces)))
 
 
     def allPossibleMoves(self):
         moves = []
         pieces = self.currPlayer.pieces
         oppPieces = self.oppPlayer.pieces
-        #isKing = self.currPlayer.isKing
 
         for piece in pieces:
             x,y,isKing = piece
-            #piece_index = pieces.index(piece)
 
             if in_bound(x+1,y+1) and (not find(x+1,y+1,pieces)) and (not find(x+1,y+1,oppPieces)) and (self.currPlayer.playerId == 1 or isKing == 1):
 
@@ -178,7 +178,6 @@ class Node:
                temp_opponent = copy.deepcopy(self.oppPlayer)
                temp_player.pieces = remove(x,y,temp_player.pieces)
                temp_player.pieces.append((x+2,y+2,isKing))
-               #temp_opponent.isKing.pop(temp_opponent.pieces.index((x+1,y+1)))
                temp_opponent.pieces = remove(x+1,y+1,temp_opponent.pieces)
                if isKing == 0:
                    temp_player.updateKings()
@@ -192,7 +191,6 @@ class Node:
                temp_opponent = copy.deepcopy(self.oppPlayer)
                temp_player.pieces = remove(x,y,temp_player.pieces)
                temp_player.pieces.append((x-2,y-2,isKing))
-               #temp_opponent.isKing.pop(temp_opponent.pieces.index((x-1,y-1)))
                temp_opponent.pieces = remove(x-1,y-1,temp_opponent.pieces)
                if isKing == 0:
                    temp_player.updateKings()
@@ -205,7 +203,6 @@ class Node:
                temp_opponent = copy.deepcopy(self.oppPlayer)
                temp_player.pieces = remove(x,y,temp_player.pieces)
                temp_player.pieces.append((x-2,y+2,isKing))
-               #temp_opponent.isKing.pop(temp_opponent.pieces.index((x-1,y+1)))
                temp_opponent.pieces = remove(x-1,y+1,temp_opponent.pieces)
                if isKing == 0:
                    temp_player.updateKings()
@@ -219,7 +216,6 @@ class Node:
                temp_opponent = copy.deepcopy(self.oppPlayer)
                temp_player.pieces = remove(x,y,temp_player.pieces)
                temp_player.pieces.append((x+2,y-2,isKing))
-               #temp_opponent.isKing.pop(temp_opponent.pieces.index((x+1,y-1)))
                temp_opponent.pieces = remove(x+1,y-1,temp_opponent.pieces)
                if isKing == 0:
                    temp_player.updateKings()
@@ -273,13 +269,12 @@ class Node:
 
     def nextBestMove(self):
 
-        #print "Finding next best move"
         if len(self.nextMoves) == 0:
             self.nextMoves = self.allPossibleMoves()
         max_ucb = -1
         if len(self.nextMoves) == 0:
             return self.oppPlayer.playerId
-        #print "length of nextmove:", len(self.nextMoves)
+
         for node in self.nextMoves:
             if node.gameStats.ucb()>max_ucb:
                 bestNode = node
@@ -315,10 +310,6 @@ class Tree:
         if len(self.currNode.nextMoves) == 0:
             return self.currNode.oppPlayer.playerId
 
-        # if self.currNode.oppPlayer.playerId == 2 :
-        #     shuffle(self.currNode.nextMoves)
-        #     return self.currNode.nextMoves[0]
-
         for node in self.currNode.nextMoves:
             if node.gameStats.probability()>max_prob:
                 bestPlay = node
@@ -335,17 +326,6 @@ class Tree:
             shuffle(max_list)
             bestPlay = max_list[0]
 
-        """print self.currNode.gameStats.w
-        print self.currNode.gameStats.s
-
-        for node in self.currNode.nextMoves:
-            print node.currPlayer.pieces
-            print node.oppPlayer.pieces
-            print node.gameStats.w
-            print node.gameStats.s
-            print node.gameStats.ucb()"""
-
-
         return bestPlay
 
 
@@ -357,16 +337,20 @@ class Game:
         self.p2 = Player(2)
         self.status = 0
         self.gameTree = Tree()
+        self.difficulty = 1
+
+    def setDifficulty(self,diff):
+        self.difficulty = diff
 
     def getStatus(self):
 
         winner = 0
         curr_node = self.gameTree.currNode
-        if  len(curr_node.currPlayer.pieces) ==0 and len(curr_node.oppPlayer.pieces) !=0:
+        if  len(curr_node.currPlayer.pieces) == 0 and len(curr_node.oppPlayer.pieces) != 0:
             winner = curr_node.oppPlayer.playerId
 
 
-        elif len(curr_node.currPlayer.pieces) !=0 and len(curr_node.oppPlayer.pieces) ==0:
+        elif len(curr_node.currPlayer.pieces) != 0 and len(curr_node.oppPlayer.pieces) == 0:
             winner = curr_node.currPlayer.playerId
 
         return winner
@@ -385,7 +369,7 @@ class Game:
             return"""
 
         t0 = timeit.default_timer()
-        counter = 10
+        counter = 2000*self.difficulty
         while counter > 0:
 
             current = self.gameTree.currNode
@@ -414,11 +398,10 @@ class Game:
         x = self.gameTree.nextBestPlay()
         if isinstance(x,int):
             self.status = x
-            print("Computer has run out of moves.")
+            print("\tComputer has run out of moves.")
         else:
             self.gameTree.currNode = x
 
-        #self.gameTree.currNode.printBoard()
         if self.status == 0:
             self.status = self.getStatus()
 
@@ -435,7 +418,6 @@ class Game:
 
         if (not in_bound(x,y)) or (not in_bound(X,Y) or (not find(x,y,curr_node.currPlayer.pieces))):
 
-            print "yes"
             return -1
 
         for piece in self.gameTree.currNode.currPlayer.pieces:
@@ -470,16 +452,16 @@ class Game:
 
         if len(moves) == 0:
             self.status = 1
-            print "in user play"
-            print("You have run out of moves.")
+            print("\tYou have run out of moves.")
             return -1
 
-
+        ret = -1
         for move in moves:
 
             if sorted(move.currPlayer.pieces) == sorted(curr_node.oppPlayer.pieces) and sorted(move.oppPlayer.pieces) == sorted(curr_node.currPlayer.pieces):
                 self.gameTree.currNode = move
-                return move
+                ret = move
+                break
 
         if self.status == 0:
             self.status = self.getStatus()
@@ -487,7 +469,7 @@ class Game:
         if self.status == 0:
             self.status = self.getStatus()
 
-        return -1
+        return ret
 
 
 class Player:
@@ -495,7 +477,6 @@ class Player:
     def updateKings(self):
 
         if self.playerId == 1:
-           # print "updating 1 kings"
             for piece in self.pieces:
                 x,y,isKing = piece
                 if x == 7 and isKing == 0:
@@ -503,32 +484,15 @@ class Player:
                         self.pieces.append((x,y,1))
 
         if self.playerId == 2:
-           # print "updating 2 kings"
             for piece in self.pieces:
                 x,y,isKing = piece
                 if x == 0 and isKing == 0:
                         remove(x,y,self.pieces)
                         self.pieces.append((x,y,1))
 
-
-
     def __init__(self,playerId):
         self.playerId = playerId
         self.pieces = []
-       # self.isKing = []
-
-        """self.isKing.append(0)
-        self.isKing.append(0)
-        self.isKing.append(0)
-        self.isKing.append(0)
-        self.isKing.append(0)
-        self.isKing.append(0)
-        self.isKing.append(0)
-        self.isKing.append(0)
-        self.isKing.append(0)
-        self.isKing.append(0)
-        self.isKing.append(0)
-        self.isKing.append(0)"""
 
         if playerId == 1:
             self.pieces.append((0,1,0))
