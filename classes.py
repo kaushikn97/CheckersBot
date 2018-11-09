@@ -472,9 +472,6 @@ class Game:
         return ret
 
 
-#class for Player based functions 
-#Initializes the checker pieces according to the player Id (black or white)
-#Also provides additional function for updating the king based positions
 class Player:
 
     def updateKings(self):

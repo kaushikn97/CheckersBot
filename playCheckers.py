@@ -4,12 +4,15 @@ import webbrowser
 import time
 
 def get_coord(coord):
+
     if len(coord)!=2 :
         print(colored("\n\tInvalid position.","yellow"))
         return -1
+
     if not (ord(coord[1]) in range(49,57)) :
         print(colored("\n\tInvalid position.","yellow"))
         return -1
+
     if not ((ord(coord[0]) in range(97,105)) or (ord(coord[0]) in range(65,73))):
         print(colored("\n\tInvalid position.","yellow"))
         return -1
@@ -49,7 +52,7 @@ def main():
         print("\n\t*****************************************************************\n")
 
         print("\t" + colored("Red","red") + " is thinking...\n")
-        red_moves = []
+
         if len(game.gameTree.currNode.nextMoves)!=0:
             red_moves = game.gameTree.currNode.nextMoves
         else:
@@ -69,8 +72,7 @@ def main():
         while True:
 
             print("\n"),
-            moves = []
-            #print game.gameTree.currNode.currPlayer.playerId
+
             if len(game.gameTree.currNode.nextMoves) != 0:
                 moves = game.gameTree.currNode.nextMoves
             else:
@@ -111,6 +113,7 @@ def main():
 
             else:
                 break
+
             break
 
 
