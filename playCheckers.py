@@ -24,7 +24,7 @@ def get_coord(coord):
 
 
 def main():
-    game = Game()
+    game = Game() #Game object initialized
 
     print("\n\nWelcome to the Checkers game. You control the " + colored("blue","blue") + " pieces. The computer will control the  " + colored("red","red") + " pieces. " + colored("Red","red") + " plays first.\n")
     game.gameTree.currNode.printBoard()
