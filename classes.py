@@ -420,7 +420,7 @@ class Game:
             return"""
 
         t0 = timeit.default_timer()
-        counter = 2000 * self.difficulty
+        counter = 4000 * self.difficulty
         while counter > 0:
 
             current = self.gameTree.currNode
