@@ -34,7 +34,128 @@
             
   <div class="section" id="module-playCheckers">
 <span id="welcome-to-checkersbot-s-documentation"></span><h1>Welcome to CheckersBot’s documentation!<a class="headerlink" href="#module-playCheckers" title="Permalink to this headline">¶</a></h1>
-<span class="target" id="module-classes"></span><div class="toctree-wrapper compound">
+<div class="section" id="playcheckers-py">
+<h2>playCheckers.py<a class="headerlink" href="#playcheckers-py" title="Permalink to this headline">¶</a></h2>
+<p>The secondary file which contains the main function to run the game versus the AI opponent</p>
+<dl class="function">
+<dt id="playCheckers.get_coord">
+<code class="descclassname">playCheckers.</code><code class="descname">get_coord</code><span class="sig-paren">(</span><em>coord</em><span class="sig-paren">)</span><a class="headerlink" href="#playCheckers.get_coord" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the user input into the program based input</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="playCheckers.main">
+<code class="descclassname">playCheckers.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#playCheckers.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main function for playing the entire game
+Red is the computer and Blue is the player</p>
+</dd></dl>
+
+</div>
+<span class="target" id="module-classes"></span><div class="section" id="classes-py">
+<h2>Classes.py<a class="headerlink" href="#classes-py" title="Permalink to this headline">¶</a></h2>
+<p>This file includes all the main classes for the Classes.py
+including Game, Player, Node, Tree and Stats</p>
+<dl class="class">
+<dt id="classes.Node">
+<em class="property">class </em><code class="descclassname">classes.</code><code class="descname">Node</code><span class="sig-paren">(</span><em>player</em>, <em>opponent</em>, <em>parent=None</em>, <em>parentSimCount=0</em><span class="sig-paren">)</span><a class="headerlink" href="#classes.Node" title="Permalink to this definition">¶</a></dt>
+<dd><p>The node class which stores the positions of players’ pieces and the nextMoves available.
+It also houses important functions for simulating the game, finding all possible moves, finding the next best move,  and updating the tree.</p>
+<dl class="method">
+<dt id="classes.Node.allPossibleMoves">
+<code class="descname">allPossibleMoves</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#classes.Node.allPossibleMoves" title="Permalink to this definition">¶</a></dt>
+<dd><p>The function returns all the possible moves by checking the current game state.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="classes.Node.nextBestMove">
+<code class="descname">nextBestMove</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#classes.Node.nextBestMove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the next best move based on the current acquired statistics – max_ucb</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="classes.Node.printBoard">
+<code class="descname">printBoard</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#classes.Node.printBoard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the board i.e. prints the positions of the player and the opposition and also returns the pieces remaining</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="classes.Node.simulate">
+<code class="descname">simulate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#classes.Node.simulate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs a Monte Carlo Simulation until a player wins. In the loop all the possible moves are caluated.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="classes.Node.updateStats">
+<code class="descname">updateStats</code><span class="sig-paren">(</span><em>winner</em><span class="sig-paren">)</span><a class="headerlink" href="#classes.Node.updateStats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Based on the game played out updates the  s and w values respectively</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="classes.Player">
+<em class="property">class </em><code class="descclassname">classes.</code><code class="descname">Player</code><span class="sig-paren">(</span><em>playerId</em><span class="sig-paren">)</span><a class="headerlink" href="#classes.Player" title="Permalink to this definition">¶</a></dt>
+<dd><p>The player class stores the type of player and its correspondinig pieces</p>
+<dl class="method">
+<dt id="classes.Player.updateKings">
+<code class="descname">updateKings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#classes.Player.updateKings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if piece if any of the pieces have become a king after the current and updates the piece’s stautus</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="classes.Stats">
+<em class="property">class </em><code class="descclassname">classes.</code><code class="descname">Stats</code><span class="sig-paren">(</span><em>parentSimCount</em><span class="sig-paren">)</span><a class="headerlink" href="#classes.Stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>The class contains essential statistic based functions – Initializes the number of simulations as zero.
+cd  Number of Wins as zero and exploitation parameter as 0.5</p>
+<dl class="method">
+<dt id="classes.Stats.probability">
+<code class="descname">probability</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#classes.Stats.probability" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the probability that the Red player will win from the particular game state</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="classes.Stats.ucb">
+<code class="descname">ucb</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#classes.Stats.ucb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the UCB value used for calculations</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="classes.Tree">
+<em class="property">class </em><code class="descclassname">classes.</code><code class="descname">Tree</code><a class="headerlink" href="#classes.Tree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tree class which builds the Game tree which has a node consisting of the two players’ nodes</p>
+<dl class="method">
+<dt id="classes.Tree.nextBestPlay">
+<code class="descname">nextBestPlay</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#classes.Tree.nextBestPlay" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the next best play based on the maximum probability value acquired from the current game state</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="classes.find">
+<code class="descclassname">classes.</code><code class="descname">find</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>pieces</em><span class="sig-paren">)</span><a class="headerlink" href="#classes.find" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function returns whether the current position hold a piece or not from the pieces array sent as argument</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="classes.in_bound">
+<code class="descclassname">classes.</code><code class="descname">in_bound</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#classes.in_bound" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function checks if the piece lies in the bounds of the board or not
+Here the size of the board is 8 X 8.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="classes.remove">
+<code class="descclassname">classes.</code><code class="descname">remove</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>pieces</em><span class="sig-paren">)</span><a class="headerlink" href="#classes.remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function removes a particular piece from the given coordinates if present</p>
+</dd></dl>
+
+</div>
+<div class="toctree-wrapper compound">
 </div>
 </div>
 <div class="section" id="indices-and-tables">

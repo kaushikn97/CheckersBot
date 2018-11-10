@@ -1,3 +1,12 @@
+"""playCheckers.py
+============================================
+
+
+The secondary file which contains the main function to run the game versus the AI opponent
+
+"""
+
+
 from classes import *
 from termcolor import colored
 import webbrowser
@@ -5,7 +14,7 @@ import time
 
 
 def get_coord(coord):
-
+    """Converts the user input into the program based input"""
     if len(coord) != 2:
         print(colored("\n\tInvalid position.", "yellow"))
         return -1
@@ -28,6 +37,8 @@ def get_coord(coord):
 
 
 def main():
+    """Main function for playing the entire game
+    Red is the computer and Blue is the player"""
     game = Game()  # Game object initialized
 
     print("\n\nWelcome to the Checkers game. You control the " + colored("blue", "blue") +

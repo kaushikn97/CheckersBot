@@ -1,3 +1,11 @@
+"""
+Classes.py
+========================================================
+
+This file includes all the main classes for the Classes.py
+including Game, Player, Node, Tree and Stats
+
+"""
 import numpy
 import math
 import timeit
@@ -12,6 +20,10 @@ sim_time = 5
 
 
 def in_bound(x, y):
+    """This function checks if the piece lies in the bounds of the board or not
+        Here the size of the board is 8 X 8.
+
+    """
     if x < 8 and x >= 0 and y >= 0 and y < 8:
         return True
     else:
@@ -19,7 +31,7 @@ def in_bound(x, y):
 
 
 def find(x, y, pieces):
-
+    """This function returns whether the current position hold a piece or not from the pieces array sent as argument"""
     for piece in pieces:
         x_loc, y_loc, isKing = piece
         if x == x_loc and y == y_loc:
@@ -29,7 +41,9 @@ def find(x, y, pieces):
 
 
 def remove(x, y, pieces):
+    """Function removes a particular piece from the given coordinates if present
 
+    """
     for piece in pieces:
         x_loc, y_loc, isKing = piece
         if x == x_loc and y == y_loc:
@@ -38,6 +52,10 @@ def remove(x, y, pieces):
 
 
 class Stats:
+    """The class contains essential statistic based functions -- Initializes the number of simulations as zero.
+    cd  Number of Wins as zero and exploitation parameter as 0.5
+
+    """
 
     def __init__(self, parentSimCount):
 
@@ -47,14 +65,18 @@ class Stats:
         self.sp = parentSimCount
 
     def ucb(self):
+        """Returns the UCB value used for calculations
 
+        """
         if self.s == 0:
             return 1000.0
         else:
             return (self.w / self.s) + (self.c * math.sqrt(math.log(self.sp + 1) / self.s))
 
     def probability(self):
+        """Returns the probability that the Red player will win from the particular game state
 
+        """
         if self.s == 0.0:
             return 0.0
         else:
@@ -62,6 +84,10 @@ class Stats:
 
 
 class Node:
+    """The node class which stores the positions of players' pieces and the nextMoves available.
+    It also houses important functions for simulating the game, finding all possible moves, finding the next best move,  and updating the tree.
+
+    """
 
     def __init__(self, player, opponent, parent=None, parentSimCount=0):
         self.visited = False
@@ -72,7 +98,7 @@ class Node:
         self.parentNode = parent
 
     def printBoard(self):
-
+        """Print the board i.e. prints the positions of the player and the opposition and also returns the pieces remaining"""
         currBoard = numpy.full((8, 8), 0)
         currKings = numpy.full((8, 8), 0)
 
@@ -104,13 +130,16 @@ class Node:
             for j in range(0, 8):
                 piece = i, j
                 if currKings[piece] == 1:
-                    print(colored(currBoard[piece], 'green')),
+                    if currBoard[piece] == 1:
+                        print(colored(u'\u2776', 'green')),
+                    else:
+                        print(colored(u'\u2777', 'green')),
                 elif currBoard[piece] == 1:
-                    print(colored(currBoard[piece], 'red')),
+                    print(colored(u'\u2776', 'red')),
                 elif currBoard[piece] == 2:
-                    print(colored(currBoard[piece], 'blue')),
+                    print(colored(u'\u2777', 'blue')),
                 else:
-                    print(currBoard[piece]),
+                    print(u'\u25cc'),
             print("\n"),
 
         if self.currPlayer.playerId == 1:
@@ -125,6 +154,8 @@ class Node:
                   " pieces remaining: " + str(len(self.currPlayer.pieces)))
 
     def allPossibleMoves(self):
+        """The function returns all the possible moves by checking the current game state."""
+
         moves = []
         pieces = self.currPlayer.pieces
         oppPieces = self.oppPlayer.pieces
@@ -241,7 +272,10 @@ class Node:
         return moves
 
     def updateStats(self, winner):
+        """Based on the game played out updates the  s and w values respectively
 
+
+        """
         self.gameStats.s = self.gameStats.s + 1
 
         if(winner == 1):
@@ -254,6 +288,7 @@ class Node:
             return
 
     def simulate(self):
+        """Runs a Monte Carlo Simulation until a player wins. In the loop all the possible moves are caluated. """
 
         curr_node = self
         curr_pieces = self.currPlayer.pieces
@@ -281,7 +316,7 @@ class Node:
         return winner
 
     def nextBestMove(self):
-
+        """Finds the next best move based on the current acquired statistics -- max_ucb"""
         if len(self.nextMoves) == 0:
             self.nextMoves = self.allPossibleMoves()
         max_ucb = -1
@@ -307,18 +342,20 @@ class Node:
 
 
 class Tree:
+    """Tree class which builds the Game tree which has a node consisting of the two players' nodes
+    """
 
     def __init__(self):
         self.root = Node(Player(1), Player(2))
         self.currNode = self.root
 
     def nextBestPlay(self):
-
+        """Finds the next best play based on the maximum probability value acquired from the current game state"""
         if not self.currNode.nextMoves:
             self.currNode.nextMoves = self.currNode.allPossibleMoves()
         max_prob = -1
         max_list = []
-        #min_prob = 5000
+        # min_prob = 5000
 
         if len(self.currNode.nextMoves) == 0:
             return self.currNode.oppPlayer.playerId
@@ -327,7 +364,7 @@ class Tree:
             if node.gameStats.probability() > max_prob:
                 bestPlay = node
                 max_prob = node.gameStats.probability()
-            """if node.gameStats.probability()<min_prob:
+            """if node.gameStats.probability() < min_prob:
                 worstPlay = node"""
 
         if bestPlay.gameStats.probability() == 0.0:
@@ -367,9 +404,13 @@ class Game:
         return winner
 
     def play(self):
-        """if self.gameTree.currNode.currPlayer.playerId == 2:
+        """The play function informs the AI player that it is its turn to play and decides its move
+        """
+
+        """
+        if self.gameTree.currNode.currPlayer.playerId == 2:
             moves = []
-            if len(self.gameTree.currNode.nextMoves) ==0:
+            if len(self.gameTree.currNode.nextMoves) == 0:
                 moves = self.gameTree.currNode.allPossibleMoves()
             else:
                 moves = self.gameTree.currNode.nextMoves
@@ -416,7 +457,9 @@ class Game:
             self.status = self.getStatus()
 
     def userPlay(self, piece_loc, move_loc):
-
+        """
+        Function for validiting the user's move  based on the current game state and implementing the same (make necessary updates)
+        """
         moves = []
 
         x, y = piece_loc
@@ -486,9 +529,10 @@ class Game:
 
 
 class Player:
+    """The player class stores the type of player and its correspondinig pieces"""
 
     def updateKings(self):
-
+        """Checks if piece if any of the pieces have become a king after the current and updates the piece's stautus"""
         if self.playerId == 1:
             for piece in self.pieces:
                 x, y, isKing = piece
