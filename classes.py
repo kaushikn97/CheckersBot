@@ -19,17 +19,10 @@ from termcolor import colored
 
 def probability(node):
 
-    kingsCount = 0.0
-    for piece in node.oppPlayer.pieces:
-        x, y, isKing = piece
-        if isKing == 1:
-            kingsCount += 1
-
     if node.gameStats.s == 0.0:
-        return (0.5 * kingsCount) + (0.5 * node.killedOppPlayer)
+        return 0.0
     else:
-
-        return (node.gameStats.w / node.gameStats.s) + (0.7 * node.killedOppPlayer) + (0.9 * kingsCount)
+        return (node.gameStats.w / node.gameStats.s)
 
 
 def ucb(node):
@@ -37,7 +30,13 @@ def ucb(node):
     if node.gameStats.s == 0:
         return 1000.0
     else:
-        return (node.gameStats.w / node.gameStats.s) + (0.5 * math.sqrt(math.log(node.parentNode.gameStats.s + 1) / node.gameStats.s))
+        kingsCount = 0.0
+        for piece in node.oppPlayer.pieces:
+            x, y, isKing = piece
+            if isKing == 1:
+                kingsCount += 1
+
+        return (node.gameStats.w / node.gameStats.s) + (math.sqrt(math.log(node.parentNode.gameStats.s + 1) / node.gameStats.s)) + kingsCount + node.killedOppPlayer
 
 
 def in_bound(x, y):
@@ -147,15 +146,15 @@ class Node:
             print("\n"),
 
         if self.currPlayer.playerId == 1:
-            print("\n\t" + colored("Red", "red")
-                  + " pieces remaining: " + str(len(self.currPlayer.pieces)))
-            print("\t" + colored("Blue", "blue")
-                  + " pieces remaining: " + str(len(self.oppPlayer.pieces)))
+            print("\n\t" + colored("Red", "red") +
+                  " pieces remaining: " + str(len(self.currPlayer.pieces)))
+            print("\t" + colored("Blue", "blue") +
+                  " pieces remaining: " + str(len(self.oppPlayer.pieces)))
         else:
-            print("\n\t" + colored("Red", "red")
-                  + " pieces remaining: " + str(len(self.oppPlayer.pieces)))
-            print("\t" + colored("Blue", "blue")
-                  + " pieces remaining: " + str(len(self.currPlayer.pieces)))
+            print("\n\t" + colored("Red", "red") +
+                  " pieces remaining: " + str(len(self.oppPlayer.pieces)))
+            print("\t" + colored("Blue", "blue") +
+                  " pieces remaining: " + str(len(self.currPlayer.pieces)))
 
     def allPossibleMoves(self):
         """The function returns all the possible moves by checking the current game state."""
