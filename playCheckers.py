@@ -1,7 +1,6 @@
 """playCheckers.py
 ============================================
 
-
 The secondary file which contains the main function to run the game versus the AI opponent
 
 """
@@ -51,7 +50,7 @@ def main():
     if want_help == 'y' or want_help == 'Y':
         webbrowser.open_new("./rules.html")
 
-    time.sleep(1)
+    time.sleep(2)
 
     diff = input(
         "\tEnter the difficulty you want the computer to play at (1 to 10): ")

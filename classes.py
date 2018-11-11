@@ -19,6 +19,51 @@ from termcolor import colored
 sim_time = 5
 
 
+def probability(node):
+    """if len(node.currPlayer.pieces) == 0:
+        return 1000"""
+
+    kingsCount = 0.0
+    for piece in node.oppPlayer.pieces:
+        x, y, isKing = piece
+        if isKing == 1:
+            kingsCount += 1
+
+    if len(node.oppPlayer.pieces) != 0:
+        kingsCount = kingsCount / len(node.oppPlayer.pieces)
+    else:
+        kingsCount = 0.0
+
+    if node.gameStats.s == 0.0:
+        return 0.0 + (0.5 * kingsCount) + (0.5 * node.killedOppPlayer)
+    else:
+
+        if len(node.oppPlayer.pieces) > 6:
+            return (node.gameStats.w / node.gameStats.s) + (0.5 * node.killedOppPlayer) + (0.5 * kingsCount)
+
+        else:
+            return (node.gameStats.w / node.gameStats.s)
+
+
+def ucb(node):
+
+    if node.gameStats.s == 0:
+        return 1000.0
+    else:
+
+        kingsCount = 0.0
+        for piece in node.oppPlayer.pieces:
+            x, y, isKing = piece
+            if isKing == 1:
+                kingsCount += 1
+
+        if len(node.oppPlayer.pieces) != 0:
+            kingsCount = kingsCount / len(node.oppPlayer.pieces)
+        else:
+            kingsCount = 0.0
+        return (node.gameStats.w / node.gameStats.s) + (0.5 * math.sqrt(math.log(node.parentNode.gameStats.s + 1) / node.gameStats.s))
+
+
 def in_bound(x, y):
     """This function checks if the piece lies in the bounds of the board or not
         Here the size of the board is 8 X 8.
@@ -64,24 +109,6 @@ class Stats:
         self.c = 0.5
         self.sp = parentSimCount
 
-    def ucb(self):
-        """Returns the UCB value used for calculations
-
-        """
-        if self.s == 0:
-            return 1000.0
-        else:
-            return (self.w / self.s) + (self.c * math.sqrt(math.log(self.sp + 1) / self.s))
-
-    def probability(self):
-        """Returns the probability that the Red player will win from the particular game state
-
-        """
-        if self.s == 0.0:
-            return 0.0
-        else:
-            return (self.w / self.s)
-
 
 class Node:
     """The node class which stores the positions of players' pieces and the nextMoves available.
@@ -89,9 +116,10 @@ class Node:
 
     """
 
-    def __init__(self, player, opponent, parent=None, parentSimCount=0):
+    def __init__(self, player, opponent, parent=None, parentSimCount=0, killed=0):
         self.visited = False
         self.gameStats = Stats(parentSimCount)
+        self.killedOppPlayer = killed
         self.oppPlayer = opponent
         self.currPlayer = player
         self.nextMoves = []
@@ -143,15 +171,15 @@ class Node:
             print("\n"),
 
         if self.currPlayer.playerId == 1:
-            print("\n\t" + colored("Red", "red") +
-                  " pieces remaining: " + str(len(self.currPlayer.pieces)))
-            print("\t" + colored("Blue", "blue") +
-                  " pieces remaining: " + str(len(self.oppPlayer.pieces)))
+            print("\n\t" + colored("Red", "red")
+                  + " pieces remaining: " + str(len(self.currPlayer.pieces)))
+            print("\t" + colored("Blue", "blue")
+                  + " pieces remaining: " + str(len(self.oppPlayer.pieces)))
         else:
-            print("\n\t" + colored("Red", "red") +
-                  " pieces remaining: " + str(len(self.oppPlayer.pieces)))
-            print("\t" + colored("Blue", "blue") +
-                  " pieces remaining: " + str(len(self.currPlayer.pieces)))
+            print("\n\t" + colored("Red", "red")
+                  + " pieces remaining: " + str(len(self.oppPlayer.pieces)))
+            print("\t" + colored("Blue", "blue")
+                  + " pieces remaining: " + str(len(self.currPlayer.pieces)))
 
     def allPossibleMoves(self):
         """The function returns all the possible moves by checking the current game state."""
@@ -317,21 +345,23 @@ class Node:
 
     def nextBestMove(self):
         """Finds the next best move based on the current acquired statistics -- max_ucb"""
+        # print "Finding next best move"
         if len(self.nextMoves) == 0:
             self.nextMoves = self.allPossibleMoves()
         max_ucb = -1
         if len(self.nextMoves) == 0:
             return self.oppPlayer.playerId
-
+        # print "length of nextmove:", len(self.nextMoves)
         for node in self.nextMoves:
-            if node.gameStats.ucb() > max_ucb:
+            temp_ucb = ucb(node)
+            if temp_ucb > max_ucb:
                 bestNode = node
-                max_ucb = node.gameStats.ucb()
+                max_ucb = temp_ucb
 
         same_moves = []
-        if bestNode.gameStats.ucb == 1000:
+        if ucb(bestNode) == 1000:
             for node in self.nextMoves:
-                if node.gameStats.ucb == 1000:
+                if ucb(node) == 1000:
                     same_moves.append(node)
 
         if len(same_moves) != 0:
@@ -351,32 +381,45 @@ class Tree:
 
     def nextBestPlay(self):
         """Finds the next best play based on the maximum probability value acquired from the current game state"""
-        if not self.currNode.nextMoves:
+
+        if len(self.currNode.nextMoves) == 0:
             self.currNode.nextMoves = self.currNode.allPossibleMoves()
         max_prob = -1
         max_list = []
-        # min_prob = 5000
+        min_prob = 5000
 
         if len(self.currNode.nextMoves) == 0:
             return self.currNode.oppPlayer.playerId
 
-        for node in self.currNode.nextMoves:
-            if node.gameStats.probability() > max_prob:
-                bestPlay = node
-                max_prob = node.gameStats.probability()
-            """if node.gameStats.probability() < min_prob:
-                worstPlay = node"""
+        # if self.currNode.oppPlayer.playerId == 2 :
+        #     shuffle(self.currNode.nextMoves)
+        #     return self.currNode.nextMoves[0]
 
-        if bestPlay.gameStats.probability() == 0.0:
+        for node in self.currNode.nextMoves:
+            prob = probability(node)
+            if prob > max_prob:
+                bestPlay = node
+                max_prob = prob
+            if probability(node) < min_prob:
+                worstPlay = node
+                min_prob = probability(node)
+
+        if probability(bestPlay) == 0.0:
             for node in self.currNode.nextMoves:
-                if node.gameStats.probability() == 0.0:
+                if probability(node) == 0.0:
                     max_list.append(node)
 
         if len(max_list) != 0:
             shuffle(max_list)
             bestPlay = max_list[0]
 
-        return bestPlay
+        print self.currNode.gameStats.w
+        print self.currNode.gameStats.s
+
+        if self.currNode.currPlayer.playerId == 1:
+            return bestPlay
+        else:
+            return worstPlay
 
 
 class Game:
@@ -420,15 +463,11 @@ class Game:
             return"""
 
         t0 = timeit.default_timer()
-        counter = 4000 * self.difficulty
-        while counter > 0:
+        counter = 100 * self.difficulty
+        while timeit.default_timer() < t0 + self.difficulty:
 
             current = self.gameTree.currNode
             while True:
-
-                if (len(current.currPlayer.pieces) == 0 and len(current.oppPlayer.pieces) != 0) or (len(current.currPlayer.pieces) != 0 and len(current.oppPlayer.pieces) == 0) or len(current.nextMoves) == 0:
-                    counter -= 1
-                    break
 
                 if current.gameStats.s == 0:
                     winner = current.simulate()
