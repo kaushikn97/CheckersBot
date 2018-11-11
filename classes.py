@@ -30,6 +30,7 @@ def ucb(node):
     if node.gameStats.s == 0:
         return 1000.0
     else:
+
         kingsCount = 0.0
         for piece in node.oppPlayer.pieces:
             x, y, isKing = piece
@@ -388,8 +389,8 @@ class Tree:
             shuffle(max_list)
             bestPlay = max_list[0]
 
-        print self.currNode.gameStats.w
-        print self.currNode.gameStats.s
+        # print self.currNode.gameStats.w
+        # print self.currNode.gameStats.s
 
         if self.currNode.currPlayer.playerId == 1:
             return bestPlay

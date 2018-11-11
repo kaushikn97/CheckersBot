@@ -1,40 +1,164 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Welcome to CheckersBot’s documentation! &#8212; CheckersBot 1.0 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Welcome to CheckersBot’s documentation! &mdash; CheckersBot 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
    
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  <div class="wy-grid-for-nav">
 
-  </head><body>
-  
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
           
 
-          <div class="body" role="main">
+          
+            <a href="#" class="icon icon-home"> CheckersBot
+          
+
+          
+          </a>
+
+          
             
-  <div class="section" id="module-playCheckers">
-<span id="welcome-to-checkersbot-s-documentation"></span><h1>Welcome to CheckersBot’s documentation!<a class="headerlink" href="#module-playCheckers" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="playcheckers-py">
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Welcome to CheckersBot’s documentation!</a><ul>
+<li><a class="reference internal" href="#playcheckers-py">playCheckers.py</a></li>
+<li><a class="reference internal" href="#classes-py">Classes.py</a></li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">CheckersBot</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#">Docs</a> &raquo;</li>
+        
+      <li>Welcome to CheckersBot’s documentation!</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="welcome-to-checkersbot-s-documentation">
+<h1>Welcome to CheckersBot’s documentation!<a class="headerlink" href="#welcome-to-checkersbot-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>The Monte Carlo tree search algorithm has recently revolutionized the field of turn-based perfect information game playing. In this project, we intend use this tree search to create an artificially intelligent agent which can play checkers with a human being through a computer interface. We have implemented this algorithm using Monte Carlo tree search along with an modified Upper Confidence Bound to ensure that the search is directed toward moves which have higher probability of having a winning outcome. The modification is done to try to help the agent make agressive moves. We have collected some statistics by running multiple simulations of the agent performing at a set of specific hyperparameters against an agent with no intelligence, i.e. an agent playing random moves. Following are our observations:</p>
+<ul class="simple">
+<li>The agent wins all of the games played against a non-intelligent agent.</li>
+<li>The agent wins in an average of 80 moves.</li>
+<li>The agent wins 95% of games by eliminating all the opponents pieces and the remaining 5% by blocking all moves of the opponent.</li>
+<li>The agent initially eleminates a lot of pieces of the opponent but finds it harder to eliminate pieces as the game progresses which leads to prolonged games.</li>
+</ul>
+<hr class="docutils" />
+<span class="target" id="module-playCheckers"></span><div class="section" id="playcheckers-py">
 <h2>playCheckers.py<a class="headerlink" href="#playcheckers-py" title="Permalink to this headline">¶</a></h2>
 <p>The secondary file which contains the main function to run the game versus the AI opponent</p>
 <dl class="function">
@@ -57,7 +181,7 @@ Red is the computer and Blue is the player</p>
 including Game, Player, Node, Tree and Stats</p>
 <dl class="class">
 <dt id="classes.Node">
-<em class="property">class </em><code class="descclassname">classes.</code><code class="descname">Node</code><span class="sig-paren">(</span><em>player</em>, <em>opponent</em>, <em>parent=None</em>, <em>parentSimCount=0</em><span class="sig-paren">)</span><a class="headerlink" href="#classes.Node" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">classes.</code><code class="descname">Node</code><span class="sig-paren">(</span><em>player</em>, <em>opponent</em>, <em>parent=None</em>, <em>parentSimCount=0</em>, <em>killed=0</em><span class="sig-paren">)</span><a class="headerlink" href="#classes.Node" title="Permalink to this definition">¶</a></dt>
 <dd><p>The node class which stores the positions of players’ pieces and the nextMoves available.
 It also houses important functions for simulating the game, finding all possible moves, finding the next best move,  and updating the tree.</p>
 <dl class="method">
@@ -109,18 +233,6 @@ It also houses important functions for simulating the game, finding all possible
 <em class="property">class </em><code class="descclassname">classes.</code><code class="descname">Stats</code><span class="sig-paren">(</span><em>parentSimCount</em><span class="sig-paren">)</span><a class="headerlink" href="#classes.Stats" title="Permalink to this definition">¶</a></dt>
 <dd><p>The class contains essential statistic based functions – Initializes the number of simulations as zero.
 cd  Number of Wins as zero and exploitation parameter as 0.5</p>
-<dl class="method">
-<dt id="classes.Stats.probability">
-<code class="descname">probability</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#classes.Stats.probability" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the probability that the Red player will win from the particular game state</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="classes.Stats.ucb">
-<code class="descname">ucb</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#classes.Stats.ucb" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the UCB value used for calculations</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="class">
@@ -157,79 +269,64 @@ Here the size of the board is 8 X 8.</p>
 </div>
 <div class="toctree-wrapper compound">
 </div>
-</div>
 <div class="section" id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
 <li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
 <li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
 </ul>
 </div>
+</div>
 
 
+           </div>
+           
           </div>
-          
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="#">CheckersBot</a></h1>
+          <footer>
+  
 
+  <hr/>
 
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Darshan Prabhune, Kaushik Nimbalkar, Shardul Parab
 
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
-
-
-
-
-<h3>Navigation</h3>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="#">Documentation overview</a><ul>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
+</footer>
 
         </div>
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2018, Darshan Prabhune, Kaushik Nimbalkar, Shardul Parab.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-      |
-      <a href="_sources/index.rst.txt"
-          rel="nofollow">Page source</a>
-    </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
 
     
-
     
-  </body>
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
 </html>
