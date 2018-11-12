@@ -150,7 +150,7 @@
             
   <div class="section" id="welcome-to-checkersbot-s-documentation">
 <h1>Welcome to CheckersBot’s documentation!<a class="headerlink" href="#welcome-to-checkersbot-s-documentation" title="Permalink to this headline">¶</a></h1>
-<p>The Monte Carlo tree search algorithm has recently revolutionized the field of turn-based perfect information game playing. In this project, we intend use this tree search to create an artificially intelligent agent which can play checkers with a human being through a computer interface. We have implemented this algorithm using Monte Carlo tree search along with an modified Upper Confidence Bound to ensure that the search is directed toward moves which have higher probability of having a winning outcome. The modification is done to try to help the agent make agressive moves. We have collected some statistics by running multiple simulations of the agent performing at a set of specific hyperparameters against an agent with no intelligence, i.e. an agent playing random moves. Following are our observations:</p>
+<p>The Monte Carlo tree search algorithm has recently revolutionized the field of turn-based perfect information game playing. In this project, we have used this tree search to create an artificially intelligent agent which can play checkers with a human being through a computer interface. We have implemented this algorithm using Monte Carlo tree search along with an modified Upper Confidence Bound to ensure that the search is directed toward moves which have higher probability of having a winning outcome. The modification is done to try to help the agent make agressive moves. We have collected some statistics by running multiple simulations of the agent performing at a set of specific hyperparameters against an agent with no intelligence, i.e. an agent playing random moves. Following are our observations:</p>
 <ul class="simple">
 <li>The agent wins all of the games played against a non-intelligent agent.</li>
 <li>The agent wins in an average of 80 moves.</li>
@@ -170,8 +170,7 @@
 <dl class="function">
 <dt id="playCheckers.main">
 <code class="descclassname">playCheckers.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#playCheckers.main" title="Permalink to this definition">¶</a></dt>
-<dd><p>Main function for playing the entire game
-Red is the computer and Blue is the player</p>
+<dd><p>Main function for playing the entire game. Red is the computer and Blue is the player</p>
 </dd></dl>
 
 </div>
@@ -193,7 +192,7 @@ It also houses important functions for simulating the game, finding all possible
 <dl class="method">
 <dt id="classes.Node.nextBestMove">
 <code class="descname">nextBestMove</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#classes.Node.nextBestMove" title="Permalink to this definition">¶</a></dt>
-<dd><p>Finds the next best move based on the current acquired statistics – max_ucb</p>
+<dd><p>Finds the next best move to expand the search tree based on the given policy and its acquired statistics.</p>
 </dd></dl>
 
 <dl class="method">
@@ -231,8 +230,7 @@ It also houses important functions for simulating the game, finding all possible
 <dl class="class">
 <dt id="classes.Stats">
 <em class="property">class </em><code class="descclassname">classes.</code><code class="descname">Stats</code><span class="sig-paren">(</span><em>parentSimCount</em><span class="sig-paren">)</span><a class="headerlink" href="#classes.Stats" title="Permalink to this definition">¶</a></dt>
-<dd><p>The class contains essential statistic based functions – Initializes the number of simulations as zero.
-cd  Number of Wins as zero and exploitation parameter as 0.5</p>
+<dd><p>The class contains essential statistic based functions – Initializes the number of simulations as zero, number of Wins as zero and exploitation parameter as 0.5.</p>
 </dd></dl>
 
 <dl class="class">
@@ -242,7 +240,7 @@ cd  Number of Wins as zero and exploitation parameter as 0.5</p>
 <dl class="method">
 <dt id="classes.Tree.nextBestPlay">
 <code class="descname">nextBestPlay</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#classes.Tree.nextBestPlay" title="Permalink to this definition">¶</a></dt>
-<dd><p>Finds the next best play based on the maximum probability value acquired from the current game state</p>
+<dd><p>Finds the next best play based on the maximum probability value of winning acquired from the current game state</p>
 </dd></dl>
 
 </dd></dl>
@@ -261,9 +259,21 @@ Here the size of the board is 8 X 8.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="classes.probability">
+<code class="descclassname">classes.</code><code class="descname">probability</code><span class="sig-paren">(</span><em>node</em><span class="sig-paren">)</span><a class="headerlink" href="#classes.probability" title="Permalink to this definition">¶</a></dt>
+<dd><p>This fuction reurns to probability of winning starting from the given node as estimated by previous simulations.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="classes.remove">
 <code class="descclassname">classes.</code><code class="descname">remove</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>pieces</em><span class="sig-paren">)</span><a class="headerlink" href="#classes.remove" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function removes a particular piece from the given coordinates if present</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="classes.ucb">
+<code class="descclassname">classes.</code><code class="descname">ucb</code><span class="sig-paren">(</span><em>node</em><span class="sig-paren">)</span><a class="headerlink" href="#classes.ucb" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function descirbes the policy using which the tree will expand. It implements a modified version of UCB giving the player a more agressive playing style.</p>
 </dd></dl>
 
 </div>

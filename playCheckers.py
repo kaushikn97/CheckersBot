@@ -13,7 +13,9 @@ import time
 
 
 def get_coord(coord):
-    """Converts the user input into the program based input"""
+    """Converts the user input into the program based input
+
+    """
     if len(coord) != 2:
         print(colored("\n\tInvalid position.", "yellow"))
         return -1
@@ -36,8 +38,9 @@ def get_coord(coord):
 
 
 def main():
-    """Main function for playing the entire game
-    Red is the computer and Blue is the player"""
+    """Main function for playing the entire game. Red is the computer and Blue is the player
+
+    """
     game = Game()  # Game object initialized
 
     print("\n\nWelcome to the Checkers game. You control the " + colored("blue", "blue") +

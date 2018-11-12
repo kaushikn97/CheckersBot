@@ -18,6 +18,10 @@ from termcolor import colored
 
 
 def probability(node):
+    """
+    This fuction reurns to probability of winning starting from the given node as estimated by previous simulations.
+
+    """
 
     if node.gameStats.s == 0.0:
         return 0.0
@@ -26,6 +30,10 @@ def probability(node):
 
 
 def ucb(node):
+    """
+    This function descirbes the policy using which the tree will expand. It implements a modified version of UCB giving the player a more agressive playing style.
+
+    """
 
     if node.gameStats.s == 0:
         return 1000.0
@@ -52,7 +60,9 @@ def in_bound(x, y):
 
 
 def find(x, y, pieces):
-    """This function returns whether the current position hold a piece or not from the pieces array sent as argument"""
+    """This function returns whether the current position hold a piece or not from the pieces array sent as argument
+
+    """
     for piece in pieces:
         x_loc, y_loc, isKing = piece
         if x == x_loc and y == y_loc:
@@ -73,8 +83,7 @@ def remove(x, y, pieces):
 
 
 class Stats:
-    """The class contains essential statistic based functions -- Initializes the number of simulations as zero.
-    cd  Number of Wins as zero and exploitation parameter as 0.5
+    """The class contains essential statistic based functions -- Initializes the number of simulations as zero, number of Wins as zero and exploitation parameter as 0.5.
 
     """
 
@@ -102,7 +111,9 @@ class Node:
         self.parentNode = parent
 
     def printBoard(self):
-        """Print the board i.e. prints the positions of the player and the opposition and also returns the pieces remaining"""
+        """Print the board i.e. prints the positions of the player and the opposition and also returns the pieces remaining
+
+        """
         currBoard = numpy.full((8, 8), 0)
         currKings = numpy.full((8, 8), 0)
 
@@ -158,7 +169,9 @@ class Node:
                   " pieces remaining: " + str(len(self.currPlayer.pieces)))
 
     def allPossibleMoves(self):
-        """The function returns all the possible moves by checking the current game state."""
+        """The function returns all the possible moves by checking the current game state.
+
+        """
 
         moves = []
         pieces = self.currPlayer.pieces
@@ -278,7 +291,6 @@ class Node:
     def updateStats(self, winner):
         """Based on the game played out updates the  s and w values respectively
 
-
         """
         self.gameStats.s = self.gameStats.s + 1
 
@@ -292,7 +304,9 @@ class Node:
             return
 
     def simulate(self):
-        """Runs a Monte Carlo Simulation until a player wins. In the loop all the possible moves are caluated. """
+        """Runs a Monte Carlo Simulation until a player wins. In the loop all the possible moves are caluated.
+
+        """
 
         curr_node = self
         curr_pieces = self.currPlayer.pieces
@@ -320,7 +334,9 @@ class Node:
         return winner
 
     def nextBestMove(self):
-        """Finds the next best move based on the current acquired statistics -- max_ucb"""
+        """Finds the next best move to expand the search tree based on the given policy and its acquired statistics.
+
+        """
         # print "Finding next best move"
         if len(self.nextMoves) == 0:
             self.nextMoves = self.allPossibleMoves()
@@ -349,6 +365,7 @@ class Node:
 
 class Tree:
     """Tree class which builds the Game tree which has a node consisting of the two players' nodes
+
     """
 
     def __init__(self):
@@ -356,7 +373,9 @@ class Tree:
         self.currNode = self.root
 
     def nextBestPlay(self):
-        """Finds the next best play based on the maximum probability value acquired from the current game state"""
+        """Finds the next best play based on the maximum probability value of winning acquired from the current game state
+
+        """
 
         if len(self.currNode.nextMoves) == 0:
             self.currNode.nextMoves = self.currNode.allPossibleMoves()
@@ -408,10 +427,17 @@ class Game:
         self.difficulty = 1
 
     def setDifficulty(self, diff):
+        """
+        Sets the difficulty level at which the computer plays by altering the amount of simulation time given to it to exapnd the tree.
+
+        """
         self.difficulty = diff
 
     def getStatus(self):
+        """
+        This function returns current game status.
 
+        """
         winner = 0
         curr_node = self.gameTree.currNode
         if len(curr_node.currPlayer.pieces) == 0 and len(curr_node.oppPlayer.pieces) != 0:
@@ -427,6 +453,7 @@ class Game:
         """
 
         """
+        Uncomment for playing with non-intelligent agent
         if self.gameTree.currNode.currPlayer.playerId == 2:
             moves = []
             if len(self.gameTree.currNode.nextMoves) == 0:
@@ -474,6 +501,7 @@ class Game:
     def userPlay(self, piece_loc, move_loc):
         """
         Function for validiting the user's move  based on the current game state and implementing the same (make necessary updates)
+
         """
         moves = []
 
@@ -544,10 +572,14 @@ class Game:
 
 
 class Player:
-    """The player class stores the type of player and its correspondinig pieces"""
+    """The player class stores the type of player and its correspondinig pieces
+
+    """
 
     def updateKings(self):
-        """Checks if piece if any of the pieces have become a king after the current and updates the piece's stautus"""
+        """Checks if piece if any of the pieces have become a king after the current and updates the piece's stautus
+
+        """
         if self.playerId == 1:
             for piece in self.pieces:
                 x, y, isKing = piece
